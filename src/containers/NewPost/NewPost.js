@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import './NewPost.css';
 
@@ -6,7 +7,8 @@ class NewPost extends Component {
   state = {
     title: '',
     body: '',
-    author: 'Max'
+    author: 'Max',
+    submitted: false
   };
   postDataHandler = () => {
     const post = {
@@ -16,6 +18,10 @@ class NewPost extends Component {
       .post('http://jsonplaceholder.typicode.com/posts/', post)
       .then(response => {
         console.log(response);
+        //this.props.history.push('/posts'); // will redirect but clicking browser back button will go back to new-posts/
+        this.props.history.replace('/posts'); //does the same as Redirect, cliking browser back button will not go back to new-posts/
+
+        // this.setState({ submitted: true });
       })
       .catch(err => {
         console.log(err);
@@ -23,8 +29,13 @@ class NewPost extends Component {
   };
 
   render() {
+    let redirect = null;
+    if (this.state.submitted) {
+      redirect = <Redirect to="/posts/" />;
+    }
     return (
       <div className="NewPost">
+        {redirect}
         <h1>Add a Post</h1>
         <label>Title</label>
         <input
